@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
+import { API_ENDPOINTS } from './config/api';
 import FileUpload from './components/FileUpload';
 import JobDescriptionInput from './components/JobDescriptionInput';
 import AnalysisResults from './components/AnalysisResults';
@@ -47,7 +48,7 @@ const App: React.FC = () => {
     formData.append('jobDescription', jobDescription);
 
     try {
-      const response = await fetch('http://localhost:3001/api/analyze-resume', {
+      const response = await fetch(API_ENDPOINTS.ANALYZE_RESUME, {
         method: 'POST',
         body: formData,
       });
