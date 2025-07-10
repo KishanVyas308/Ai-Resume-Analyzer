@@ -33,6 +33,35 @@ async function extractTextFromDOCX(filePath: string): Promise<string> {
     return result.value;
 }
 
+export async function extractTextFromBuffer(buffer: Buffer, filename: string): Promise<string> {
+    const fileExtension = path.extname(filename).toLowerCase();
+    
+    try {
+        switch (fileExtension) {
+            case '.pdf':
+                return await extractTextFromPDFBuffer(buffer);
+            case '.doc':
+            case '.docx':
+                return await extractTextFromDOCXBuffer(buffer);
+            default:
+                throw new Error(`Unsupported file type: ${fileExtension}`);
+        }
+    } catch (error) {
+        console.error(`Error extracting text from buffer for ${filename}:`, error);
+        throw new Error(`Failed to extract text from ${fileExtension} file`);
+    }
+}
+
+async function extractTextFromPDFBuffer(buffer: Buffer): Promise<string> {
+    const data = await pdfParse(buffer);
+    return data.text;
+}
+
+async function extractTextFromDOCXBuffer(buffer: Buffer): Promise<string> {
+    const result = await mammoth.extractRawText({ buffer: buffer });
+    return result.value;
+}
+
 export function validateFileType(filename: string): boolean {
     const allowedExtensions = ['.pdf', '.doc', '.docx'];
     const fileExtension = path.extname(filename).toLowerCase();
