@@ -5,6 +5,7 @@ import FileUpload from './components/FileUpload';
 import JobDescriptionInput from './components/JobDescriptionInput';
 import AnalysisResults from './components/AnalysisResults';
 import LoadingSpinner from './components/LoadingSpinner';
+import AdminPage from './components/AdminPage';
 
 interface ResumeAnalysis {
   overallScore: number;
@@ -29,9 +30,16 @@ interface ResumeAnalysis {
 const App: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [jobDescription, setJobDescription] = useState<string>('');
+  const [jobTitle, setJobTitle] = useState<string>('');
   const [analysis, setAnalysis] = useState<ResumeAnalysis | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const [showAdmin, setShowAdmin] = useState<boolean>(false);
+
+  // Generate a random userId for demo (persist for session)
+  const [userId] = useState<string>(() => {
+    return 'user_' + Math.random().toString(36).substring(2, 10);
+  });
 
   const handleAnalyze = async () => {
     if (!selectedFile || !jobDescription.trim()) {
@@ -46,6 +54,8 @@ const App: React.FC = () => {
     const formData = new FormData();
     formData.append('resume', selectedFile);
     formData.append('jobDescription', jobDescription);
+    formData.append('jobTitle', jobTitle || 'Not specified');
+    formData.append('userId', userId);
 
     try {
       const response = await fetch(API_ENDPOINTS.ANALYZE_RESUME, {
@@ -70,9 +80,21 @@ const App: React.FC = () => {
   const handleReset = () => {
     setSelectedFile(null);
     setJobDescription('');
+    setJobTitle('');
     setAnalysis(null);
     setError('');
   };
+
+  if (showAdmin) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="container mx-auto px-4 py-8">
+          <button onClick={() => setShowAdmin(false)} className="mb-4 px-4 py-2 bg-indigo-600 text-white rounded">Back to App</button>
+          <AdminPage />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -86,6 +108,7 @@ const App: React.FC = () => {
             Upload your resume and job description to get an AI-powered analysis
             with personalized improvement suggestions and scoring.
           </p>
+          <button onClick={() => setShowAdmin(true)} className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded">Admin Dashboard</button>
         </div>
 
         {/* Main Content */}
@@ -106,8 +129,25 @@ const App: React.FC = () => {
               {/* Job Description Section */}
               <div className="bg-white rounded-lg shadow-lg p-6">
                 <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-                  Job Description
+                  Job Information
                 </h2>
+                
+                {/* Job Title Input */}
+                <div className="mb-4">
+                  <label htmlFor="jobTitle" className="block text-sm font-medium text-gray-700 mb-2">
+                    Job Title (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    id="jobTitle"
+                    value={jobTitle}
+                    onChange={(e) => setJobTitle(e.target.value)}
+                    placeholder="e.g., Software Engineer, Marketing Manager"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  />
+                </div>
+
+                {/* Job Description */}
                 <JobDescriptionInput 
                   value={jobDescription}
                   onChange={setJobDescription}

@@ -1,5 +1,9 @@
 import Groq from 'groq-sdk';
 
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 interface ResumeAnalysis {
     overallScore: number;
     categoryScores: {
@@ -202,11 +206,18 @@ Ensure all scores are realistic and justified. Provide constructive, specific fe
     }
 }
 
-// Export singleton instance
-const resumeAnalyzer = new ResumeAnalyzer();
+// Lazy initialization to ensure environment variables are loaded
+let resumeAnalyzer: ResumeAnalyzer | null = null;
+
+const getAnalyzer = (): ResumeAnalyzer => {
+    if (!resumeAnalyzer) {
+        resumeAnalyzer = new ResumeAnalyzer();
+    }
+    return resumeAnalyzer;
+};
 
 export const analyzeResume = (resumeText: string, jobDescription: string): Promise<ResumeAnalysis> => {
-    return resumeAnalyzer.analyzeResume(resumeText, jobDescription);
+    return getAnalyzer().analyzeResume(resumeText, jobDescription);
 };
 
 export type { ResumeAnalysis };
