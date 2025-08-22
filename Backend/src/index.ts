@@ -17,9 +17,17 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 
 // In-memory user stats with more detailed tracking
 const userStats: {
-  users: Map<string, { firstSeen: string, lastSeen: string, analysisCount: number }>,
+  users: Map<string, { 
+    firstName: string,
+    email: string,
+    firstSeen: string, 
+    lastSeen: string, 
+    analysisCount: number 
+  }>,
   performances: Array<{ 
-    userId: string, 
+    userId: string,
+    userName: string,
+    userEmail: string,
     analysis: any, 
     analyzedAt: string,
     jobTitle?: string,
@@ -81,7 +89,7 @@ app.post('/api/analyze-resume', upload.single('resume'), async (req, res) => {
             });
         }
 
-        const { jobDescription, userId, jobTitle } = req.body;
+        const { jobDescription, userId, jobTitle, userName, userEmail } = req.body;
         if (!jobDescription) {
             return res.status(400).json({ 
                 error: 'Job description is required',
@@ -92,6 +100,12 @@ app.post('/api/analyze-resume', upload.single('resume'), async (req, res) => {
             return res.status(400).json({ 
                 error: 'User ID is required',
                 message: 'Please provide a userId for tracking'
+            });
+        }
+        if (!userName || !userEmail) {
+            return res.status(400).json({ 
+                error: 'User information is required',
+                message: 'Please provide userName and userEmail for tracking'
             });
         }
 
@@ -111,22 +125,32 @@ app.post('/api/analyze-resume', upload.single('resume'), async (req, res) => {
         const now = new Date().toISOString();
         const today = new Date().toISOString().split('T')[0];
 
+        // Use email as the primary identifier for users
+        const userKey = userEmail;
+
         // Track user with detailed info
-        if (!userStats.users.has(userId)) {
-            userStats.users.set(userId, {
+        if (!userStats.users.has(userKey)) {
+            userStats.users.set(userKey, {
+                firstName: userName,
+                email: userEmail,
                 firstSeen: now,
                 lastSeen: now,
                 analysisCount: 1
             });
         } else {
-            const user = userStats.users.get(userId)!;
+            const user = userStats.users.get(userKey)!;
             user.lastSeen = now;
             user.analysisCount += 1;
+            // Update user info in case it changed
+            user.firstName = userName;
+            user.email = userEmail;
         }
 
         // Track performance with more details
         userStats.performances.push({ 
-            userId, 
+            userId,
+            userName,
+            userEmail,
             analysis, 
             analyzedAt: now,
             jobTitle: jobTitle || 'Not specified',
@@ -140,7 +164,7 @@ app.post('/api/analyze-resume', upload.single('resume'), async (req, res) => {
         }
         const dayStats = userStats.dailyStats.get(today)!;
         dayStats.analyses += 1;
-        dayStats.uniqueUsers.add(userId);
+        dayStats.uniqueUsers.add(userKey); // Use email instead of userId for unique user tracking
 
         res.json({
             success: true,
@@ -259,14 +283,19 @@ app.get('/admin/stats', authenticateAdmin, (req, res) => {
             .reverse()
             .map(p => ({
                 userId: p.userId,
+                userName: p.userName,
+                userEmail: p.userEmail,
                 score: p.analysis.overallScore,
                 analyzedAt: p.analyzedAt,
                 jobTitle: p.jobTitle,
                 fileName: p.fileName
             })),
-        userDetails: Array.from(userStats.users.entries()).map(([userId, userData]) => ({
-            userId,
-            ...userData,
+        userDetails: Array.from(userStats.users.entries()).map(([userEmail, userData]) => ({
+            userId: userEmail, // Use email as userId for backward compatibility with frontend
+            firstName: userData.firstName,
+            email: userData.email,
+            firstSeen: userData.firstSeen,
+            lastSeen: userData.lastSeen,
             analysisCount: userData.analysisCount
         }))
     });
