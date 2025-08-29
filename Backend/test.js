@@ -1,6 +1,6 @@
 async function test() {
   await fetch(
-    "https://www.naukri.com/jobapi/v4/job/050625501043?microsite=y&brandedConsultantJd=true&src=jobsearchDesk&sid=17564713317085918_1&xp=1&px=1&nignbevent_src=jobsearchDeskGNB",
+    "https://www.naukri.com/jobapi/v4/job/210825924681?microsite=y&brandedConsultantJd=true&src=jobsearchDesk&sid=17564713317085918_1&xp=2&px=1&nignbevent_src=jobsearchDeskGNB",
     {
       headers: {
         appid: "121",
