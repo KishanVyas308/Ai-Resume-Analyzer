@@ -4,9 +4,10 @@ import { API_BASE_URL } from '../config/api';
 interface JobDescriptionInputProps {
   value: string;
   onChange: (value: string) => void;
+  onJobTitleChange?: (title: string) => void;
 }
 
-const JobDescriptionInput: React.FC<JobDescriptionInputProps> = ({ value, onChange }) => {
+const JobDescriptionInput: React.FC<JobDescriptionInputProps> = ({ value, onChange, onJobTitleChange }) => {
   const [jobUrl, setJobUrl] = React.useState('');
   const [fetching, setFetching] = React.useState(false);
   const [fetchError, setFetchError] = React.useState('');
@@ -81,9 +82,15 @@ Responsibilities include developing scalable web applications, collaborating wit
         setJobUrl(''); // Clear the URL after successful fetch
         setFetchError(''); // Clear any previous errors
         
+        // Update job title if available and callback provided
+        if (data.title && onJobTitleChange) {
+          onJobTitleChange(data.title);
+        }
+        
         // Show success message with extraction source
         const source = data.source || 'Y Combinator';
-        setFetchSuccess(`✅ Successfully fetched job description from ${source}!`);
+        const titleText = data.title && onJobTitleChange ? ' and job title' : '';
+        setFetchSuccess(`✅ Successfully fetched job description${titleText} from ${source}!`);
         setExtractionMethod(data.source || '');
         
         // Clear success message after 5 seconds

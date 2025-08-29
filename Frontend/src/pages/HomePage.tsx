@@ -200,6 +200,7 @@ const HomePage: React.FC = () => {
                                     <JobDescriptionInput
                                         value={jobDescription}
                                         onChange={setJobDescription}
+                                        onJobTitleChange={setJobTitle}
                                     />
                                 </div>
                             </div>

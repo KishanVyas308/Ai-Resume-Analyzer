@@ -280,6 +280,7 @@ app.get('/api/fetch-job-description', async (req, res) => {
             return res.json({ 
                 success: true, 
                 description: fullDescription,
+                title: jobTitle, // Add title directly for frontend access
                 source: 'Y Combinator',
                 metadata: {
                     jobTitle: jobTitle,
