@@ -42,6 +42,169 @@ const userStats: {
   dailyStats: new Map()
 };
 
+// Generate fixed static sample data for the last 20 days
+const generateSampleData = () => {
+  // Fixed static data entries for each user
+  const staticDataEntries = [
+    // Day 1 (19 days ago)
+    { user: "Kishan Vyas", email: "kishan.vyas@example.com", userId: "user_001", day: 19, hour: 10, minute: 30, jobTitle: "Frontend Developer", fileName: "KishanVyas_Resume.pdf", fileSize: 156000, score: 72.5, skills: 75, experience: 70, education: 76, keywords: 71, formatting: 73 },
+    { user: "Hardik", email: "hardik@example.com", userId: "user_003", day: 19, hour: 14, minute: 15, jobTitle: "Backend Developer", fileName: "Hardik_CV.pdf", fileSize: 142000, score: 68.2, skills: 70, experience: 65, education: 72, keywords: 66, formatting: 68 },
+    
+    // Day 2 (18 days ago)
+    { user: "Kishan", email: "kishan@example.com", userId: "user_002", day: 18, hour: 9, minute: 45, jobTitle: "Full Stack Developer", fileName: "Kishan_Resume_2024.pdf", fileSize: 168000, score: 69.7, skills: 72, experience: 67, education: 74, keywords: 68, formatting: 67 },
+    { user: "Nit", email: "nit@example.com", userId: "user_004", day: 18, hour: 16, minute: 20, jobTitle: "Data Scientist", fileName: "Nit_Professional_CV.docx", fileSize: 134000, score: 76.3, skills: 78, experience: 74, education: 80, keywords: 75, formatting: 74 },
+    
+    // Day 3 (17 days ago)
+    { user: "Yash", email: "yash@example.com", userId: "user_005", day: 17, hour: 11, minute: 10, jobTitle: "Machine Learning Engineer", fileName: "Yash_Latest_Resume.pdf", fileSize: 175000, score: 74.9, skills: 77, experience: 72, education: 78, keywords: 73, formatting: 75 },
+    
+    // Day 4 (16 days ago)
+    { user: "Kishan Vyas", email: "kishan.vyas@example.com", userId: "user_001", day: 16, hour: 13, minute: 30, jobTitle: "React Developer", fileName: "KishanVyas_Updated_CV.pdf", fileSize: 159000, score: 73.1, skills: 76, experience: 71, education: 75, keywords: 72, formatting: 74 },
+    { user: "Hardik", email: "hardik@example.com", userId: "user_003", day: 16, hour: 15, minute: 45, jobTitle: "DevOps Engineer", fileName: "Hardik_Resume_Final.pdf", fileSize: 148000, score: 69.6, skills: 72, experience: 68, education: 71, keywords: 67, formatting: 70 },
+    
+    // Day 5 (15 days ago)
+    { user: "Kishan", email: "kishan@example.com", userId: "user_002", day: 15, hour: 10, minute: 15, jobTitle: "Software Engineer", fileName: "Kishan_CV_Latest.pdf", fileSize: 162000, score: 71.3, skills: 74, experience: 69, education: 75, keywords: 70, formatting: 69 },
+    { user: "Nit", email: "nit@example.com", userId: "user_004", day: 15, hour: 17, minute: 0, jobTitle: "AI Engineer", fileName: "Nit_Resume_2024.pdf", fileSize: 137000, score: 77.7, skills: 80, experience: 75, education: 80, keywords: 77, formatting: 76 },
+    { user: "Yash", email: "yash@example.com", userId: "user_005", day: 15, hour: 12, minute: 30, jobTitle: "Python Developer", fileName: "Yash_Professional_CV.docx", fileSize: 171000, score: 75.4, skills: 78, experience: 73, education: 77, keywords: 74, formatting: 75 },
+    
+    // Day 6 (14 days ago)
+    { user: "Hardik", email: "hardik@example.com", userId: "user_003", day: 14, hour: 9, minute: 20, jobTitle: "Cloud Architect", fileName: "Hardik_CV_Updated.pdf", fileSize: 145000, score: 70.8, skills: 73, experience: 68, education: 72, keywords: 69, formatting: 71 },
+    
+    // Day 7 (13 days ago)
+    { user: "Kishan Vyas", email: "kishan.vyas@example.com", userId: "user_001", day: 13, hour: 14, minute: 45, jobTitle: "Node.js Developer", fileName: "KishanVyas_CV_2024.pdf", fileSize: 161000, score: 74.9, skills: 77, experience: 73, education: 76, keywords: 74, formatting: 75 },
+    { user: "Yash", email: "yash@example.com", userId: "user_005", day: 13, hour: 11, minute: 25, jobTitle: "Mobile App Developer", fileName: "Yash_Resume_Updated.pdf", fileSize: 173000, score: 72.5, skills: 75, experience: 70, education: 74, keywords: 71, formatting: 73 },
+    
+    // Day 8 (12 days ago)
+    { user: "Nit", email: "nit@example.com", userId: "user_004", day: 12, hour: 16, minute: 10, jobTitle: "Database Administrator", fileName: "Nit_CV_Final.pdf", fileSize: 139000, score: 78.2, skills: 80, experience: 76, education: 80, keywords: 77, formatting: 78 },
+    { user: "Kishan", email: "kishan@example.com", userId: "user_002", day: 12, hour: 10, minute: 50, jobTitle: "Quality Assurance Engineer", fileName: "Kishan_Resume_Latest.pdf", fileSize: 165000, score: 67.7, skills: 70, experience: 65, education: 71, keywords: 66, formatting: 67 },
+    
+    // Day 9 (11 days ago)
+    { user: "Hardik", email: "hardik@example.com", userId: "user_003", day: 11, hour: 13, minute: 15, jobTitle: "Cyber Security Analyst", fileName: "Hardik_Professional_Resume.pdf", fileSize: 150000, score: 72.1, skills: 74, experience: 70, education: 73, keywords: 71, formatting: 72 },
+    
+    // Day 10 (10 days ago)
+    { user: "Yash", email: "yash@example.com", userId: "user_005", day: 10, hour: 15, minute: 40, jobTitle: "UI/UX Designer", fileName: "Yash_CV_Professional.pdf", fileSize: 178000, score: 76.6, skills: 79, experience: 74, education: 78, keywords: 75, formatting: 77 },
+    { user: "Kishan Vyas", email: "kishan.vyas@example.com", userId: "user_001", day: 10, hour: 9, minute: 30, jobTitle: "Product Manager", fileName: "KishanVyas_Latest_CV.pdf", fileSize: 164000, score: 75.3, skills: 77, experience: 73, education: 76, keywords: 74, formatting: 76 },
+    
+    // Day 11 (9 days ago)
+    { user: "Nit", email: "nit@example.com", userId: "user_004", day: 9, hour: 11, minute: 55, jobTitle: "Business Analyst", fileName: "Nit_Resume_Professional.pdf", fileSize: 141000, score: 73.8, skills: 76, experience: 71, education: 76, keywords: 73, formatting: 73 },
+    { user: "Kishan", email: "kishan@example.com", userId: "user_002", day: 9, hour: 14, minute: 20, jobTitle: "Java Developer", fileName: "Kishan_CV_2024.pdf", fileSize: 167000, score: 70.4, skills: 73, experience: 68, education: 72, keywords: 69, formatting: 70 },
+    
+    // Day 12 (8 days ago)
+    { user: "Hardik", email: "hardik@example.com", userId: "user_003", day: 8, hour: 16, minute: 5, jobTitle: "Angular Developer", fileName: "Hardik_Resume_2024.pdf", fileSize: 152000, score: 67.9, skills: 70, experience: 66, education: 69, keywords: 66, formatting: 68 },
+    
+    // Day 13 (7 days ago)
+    { user: "Yash", email: "yash@example.com", userId: "user_005", day: 7, hour: 10, minute: 15, jobTitle: "TypeScript Developer", fileName: "Yash_Updated_Resume.pdf", fileSize: 176000, score: 77.1, skills: 79, experience: 75, education: 78, keywords: 76, formatting: 77 },
+    { user: "Kishan Vyas", email: "kishan.vyas@example.com", userId: "user_001", day: 7, hour: 12, minute: 45, jobTitle: "Frontend Developer", fileName: "KishanVyas_Resume_Final.pdf", fileSize: 158000, score: 78.2, skills: 80, experience: 76, education: 79, keywords: 77, formatting: 79 },
+    
+    // Day 14 (6 days ago)
+    { user: "Nit", email: "nit@example.com", userId: "user_004", day: 6, hour: 15, minute: 25, jobTitle: "Machine Learning Engineer", fileName: "Nit_CV_Latest.pdf", fileSize: 143000, score: 79.1, skills: 80, experience: 77, education: 80, keywords: 78, formatting: 80 },
+    
+    // Day 15 (5 days ago)
+    { user: "Kishan", email: "kishan@example.com", userId: "user_002", day: 5, hour: 9, minute: 40, jobTitle: "Full Stack Developer", fileName: "Kishan_Professional_CV.pdf", fileSize: 169000, score: 72.6, skills: 75, experience: 70, education: 74, keywords: 71, formatting: 73 },
+    { user: "Hardik", email: "hardik@example.com", userId: "user_003", day: 5, hour: 13, minute: 55, jobTitle: "Backend Developer", fileName: "Hardik_CV_Professional.pdf", fileSize: 147000, score: 71.3, skills: 73, experience: 69, education: 72, keywords: 70, formatting: 72 },
+    
+    // Day 16 (4 days ago)
+    { user: "Yash", email: "yash@example.com", userId: "user_005", day: 4, hour: 11, minute: 30, jobTitle: "React Developer", fileName: "Yash_Resume_Latest.pdf", fileSize: 174000, score: 75.7, skills: 78, experience: 73, education: 77, keywords: 74, formatting: 76 },
+    
+    // Day 17 (3 days ago)
+    { user: "Kishan Vyas", email: "kishan.vyas@example.com", userId: "user_001", day: 3, hour: 14, minute: 10, jobTitle: "Software Engineer", fileName: "KishanVyas_CV_Updated.pdf", fileSize: 160000, score: 76.9, skills: 79, experience: 75, education: 78, keywords: 76, formatting: 76 },
+    { user: "Nit", email: "nit@example.com", userId: "user_004", day: 3, hour: 16, minute: 35, jobTitle: "Data Scientist", fileName: "Nit_Resume_Updated.pdf", fileSize: 144000, score: 78.4, skills: 80, experience: 76, education: 80, keywords: 77, formatting: 79 },
+    
+    // Day 18 (2 days ago)
+    { user: "Kishan", email: "kishan@example.com", userId: "user_002", day: 2, hour: 10, minute: 20, jobTitle: "DevOps Engineer", fileName: "Kishan_Resume_Professional.pdf", fileSize: 166000, score: 68.8, skills: 71, experience: 66, education: 70, keywords: 67, formatting: 70 },
+    { user: "Hardik", email: "hardik@example.com", userId: "user_003", day: 2, hour: 15, minute: 50, jobTitle: "Cloud Architect", fileName: "Hardik_Latest_Resume.pdf", fileSize: 149000, score: 73.2, skills: 75, experience: 71, education: 74, keywords: 72, formatting: 74 },
+    
+    // Day 19 (1 day ago)
+    { user: "Yash", email: "yash@example.com", userId: "user_005", day: 1, hour: 12, minute: 15, jobTitle: "Python Developer", fileName: "Yash_CV_Final.pdf", fileSize: 177000, score: 77.5, skills: 79, experience: 75, education: 78, keywords: 76, formatting: 79 },
+    
+    // Day 20 (today)
+    { user: "Nit", email: "nit@example.com", userId: "user_004", day: 0, hour: 9, minute: 45, jobTitle: "AI Engineer", fileName: "Nit_Professional_Resume.pdf", fileSize: 146000, score: 80.0, skills: 80, experience: 78, education: 80, keywords: 79, formatting: 80 }
+  ];
+
+  // Process each static entry
+  staticDataEntries.forEach(entry => {
+    const date = new Date();
+    date.setDate(date.getDate() - entry.day);
+    date.setHours(entry.hour, entry.minute, 0, 0);
+    
+    const dayStr = date.toISOString().split('T')[0];
+    
+    // Create analysis object
+    const analysis = {
+      overallScore: entry.score,
+      categoryScores: {
+        skills: entry.skills,
+        experience: entry.experience,
+        education: entry.education,
+        keywords: entry.keywords,
+        formatting: entry.formatting
+      },
+      strengths: [
+        "Strong technical skills and programming expertise",
+        "Well-structured and professional resume format",
+        "Relevant project experience and achievements",
+        "Clear educational background and certifications",
+        "Good understanding of industry best practices"
+      ],
+      weaknesses: [
+        "Could add more quantified achievements",
+        "Missing some industry-specific keywords",
+        "Portfolio links could be more prominent",
+        "Could improve soft skills presentation"
+      ],
+      recommendations: [
+        "Include more specific metrics and quantified results",
+        "Add relevant certifications for the target role",
+        "Highlight leadership and teamwork experiences",
+        "Include links to portfolio or GitHub projects",
+        "Optimize keywords for ATS compatibility"
+      ],
+      matchingKeywords: ["JavaScript", "React", "Node.js", "Python", "Git"],
+      missingKeywords: ["Docker", "Kubernetes", "AWS", "CI/CD"],
+      summary: `${entry.user}'s resume demonstrates strong potential for the ${entry.jobTitle} position with an overall score of ${entry.score}%. The analysis reveals solid technical skills and relevant experience, with opportunities for improvement in quantified achievements and keyword optimization.`
+    };
+    
+    // Track user
+    if (!userStats.users.has(entry.email)) {
+      userStats.users.set(entry.email, {
+        firstName: entry.user,
+        email: entry.email,
+        firstSeen: date.toISOString(),
+        lastSeen: date.toISOString(),
+        analysisCount: 1
+      });
+    } else {
+      const userData = userStats.users.get(entry.email)!;
+      userData.lastSeen = date.toISOString();
+      userData.analysisCount += 1;
+    }
+    
+    // Add performance record
+    userStats.performances.push({
+      userId: entry.userId,
+      userName: entry.user,
+      userEmail: entry.email,
+      analysis: analysis,
+      analyzedAt: date.toISOString(),
+      jobTitle: entry.jobTitle,
+      fileName: entry.fileName,
+      fileSize: entry.fileSize
+    });
+    
+    // Track daily stats
+    if (!userStats.dailyStats.has(dayStr)) {
+      userStats.dailyStats.set(dayStr, { analyses: 0, uniqueUsers: new Set() });
+    }
+    const dayStats = userStats.dailyStats.get(dayStr)!;
+    dayStats.analyses += 1;
+    dayStats.uniqueUsers.add(entry.email);
+  });
+  
+  console.log(`Generated ${userStats.performances.length} static sample analyses for ${userStats.users.size} users over the last 20 days`);
+};
+
+// Initialize sample data
+generateSampleData();
+
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
